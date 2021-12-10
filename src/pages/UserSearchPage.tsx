@@ -3,25 +3,30 @@ import Button from '@material-ui/core/Button';
 import Snackbar from '@material-ui/core/Snackbar';
 import {CircularProgress} from "@material-ui/core";
 import Header from '../components/Header/Header';
-import {BASE_URL, ErrorSpecs, GetDataSource, RepositorySpecs, UserListType, UserType} from '../services/FetchData';
+import {useNavigate} from 'react-router-dom';
+import {useStore} from "../store";
+import {BASE_URL, GetDataSource, RepositorySpecs, UserListType, UserType} from '../services/FetchData';
+import {LOADING, USER_INFOS, USER_REPOS_LIST} from "../store/actions";
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
-import {useNavigate} from 'react-router-dom';
 
 function UserSearchPage() {
     const navigate = useNavigate();
+    const {state, dispatch} = useStore();
     const [inputUsername, setInputUsername] = useState<string>('');
     const [userList, setUserList] = useState<UserType[]>([]); // [{...},{...}]
-    const [loading, setLoading] = useState<boolean>(true);
     const [errorTxt, setErrorTxt] = useState<string>('');
     const [openSnackbar, setOpenSnackbar] = useState<boolean>(false);
 
-    const getUsernamesList = async (): Promise<any> => {
+    useEffect(()=>{
+        console.log('user search', state);
+    },[])
+
+    const getUsernamesList = async (): Promise<void> => {
         if (inputUsername.length >= 2) {
             try {
                 const response: UserListType = await GetDataSource.getData(`${BASE_URL}/search/users?q=${inputUsername}`);
                 setUserList(response.items);
-                setLoading(false);
             } catch (err: any) {
                 setErrorTxt(err['errorType']);
                 setOpenSnackbar(true);
@@ -29,10 +34,12 @@ function UserSearchPage() {
         }
     }
 
-    const getUserInfos = async () => {
+    const getUserInfos = async (): Promise<void> => {
         try {
             const response = await GetDataSource.getData(`${BASE_URL}/users/${inputUsername}`);
-            getReposList(response.repos_url);
+            await getReposList(response.repos_url);
+            dispatch({type: USER_INFOS, payload: response});
+            dispatch({type: LOADING, payload: false});
             navigate('/reposlist')
         } catch (err: any) {
             setErrorTxt(err['errorType']);
@@ -40,23 +47,24 @@ function UserSearchPage() {
         }
     }
 
-    const getReposList = async (url: string) => {
+    const getReposList = async (url: string): Promise<void> => {
         try {
             const response: RepositorySpecs = await GetDataSource.getData(url);
-            console.log('res', response);
+            dispatch({type: USER_REPOS_LIST, payload: response});
+            dispatch({type: LOADING, payload: false});
         } catch (err: any) {
             setErrorTxt(err['errorType']);
             setOpenSnackbar(true);
         }
     }
 
-    const handleChange = (e: ChangeEvent<HTMLInputElement>): void => {
+    const handleChange = async (e: ChangeEvent<HTMLInputElement>): Promise<void> => {
         setInputUsername(e.target.value);
-        getUsernamesList();
+        await getUsernamesList();
     }
 
 
-    const handleSubmit = async () => {
+    const handleSubmit = async (): Promise<void> => {
         if (inputUsername === '') {
             setOpenSnackbar(true);
             setErrorTxt('Le champ est vide');
@@ -65,12 +73,12 @@ function UserSearchPage() {
         }
     }
 
-    const handleUserNameSelection = (selection: string) => {
+    const handleUserNameSelection = (selection: string): void => {
         setInputUsername(selection);
         setUserList([]);
     }
 
-    const handleClose = () => {
+    const handleClose = (): void => {
         setOpenSnackbar(false);
     };
 
@@ -88,7 +96,7 @@ function UserSearchPage() {
                         type="button">
                     Search
                 </button>
-                {!loading ? <CircularProgress/> : null}
+                {!state.loading ? <CircularProgress/> : null}
             </div>
             {userList.length > 0 ?
                 <div className="flex justify-center">

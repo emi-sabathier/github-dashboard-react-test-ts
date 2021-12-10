@@ -23,6 +23,7 @@ export type RepositorySpecs = {
     description: string;
     url: string;
     created_at: string;
+    updated_at: string;
     stargazers_count: number;
     language: string;
 }
@@ -34,8 +35,7 @@ export type ErrorSpecs = {
 
 class FetchDataSource {
     getData(url: string) {
-        console.log(`${url}`)
-        return axios.get(`${url}`)
+        return axios.get(url)
             .then((res) => {
                 return res.data;
             })

@@ -8,21 +8,16 @@ type InitialStateType = {
     loading: boolean,
 }
 
-// type ActionType = {
-//     type: string;
-//     payload: boolean | Promise<UserSpecs> | Promise<RepositorySpecs>
-// }
+type ActionType =
+    | { type: 'LOADING', payload: boolean}
+    | { type: 'USER_INFOS', payload: UserType}
+    | { type: 'USER_REPOS_LIST', payload: RepositorySpecs}
 
 const initialState: InitialStateType = {
     userInfos: {},
     userReposList: [],
     loading: false,
 }
-
-type ActionType =
-    | { type: 'LOADING', payload: boolean}
-    | { type: 'USER_INFOS', payload: UserType}
-    | { type: 'USER_REPOS_LIST', payload: RepositorySpecs}
 
 function reducer(state: InitialStateType, action: ActionType): any {
     switch (action.type) {
