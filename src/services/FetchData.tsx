@@ -1,4 +1,4 @@
-import axios, {Axios, AxiosResponse} from 'axios';
+import axios from 'axios';
 
 export const BASE_URL = 'https://api.github.com';
 
@@ -9,7 +9,6 @@ export type UserType = {
     avatar_url: string;
     url: string;
     repos_url: string;
-
 }
 
 export type UserListType = {

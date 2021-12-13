@@ -1,26 +1,16 @@
-import React, {ChangeEvent, useEffect, useState} from 'react';
-import Button from '@material-ui/core/Button';
-import Snackbar from '@material-ui/core/Snackbar';
+import React, {ChangeEvent, useState} from 'react';
 import {CircularProgress} from "@material-ui/core";
 import Header from '../components/Header/Header';
 import {useNavigate} from 'react-router-dom';
 import {useStore} from "../store";
 import {BASE_URL, GetDataSource, RepositorySpecs, UserListType, UserType} from '../services/FetchData';
 import {LOADING, USER_INFOS, USER_REPOS_LIST} from "../store/actions";
-import IconButton from '@material-ui/core/IconButton';
-import CloseIcon from '@material-ui/icons/Close';
 
 function UserSearchPage() {
     const navigate = useNavigate();
-    const {state, dispatch} = useStore();
+    const {state, dispatch, setErrorTxt, setOpenSnackbar} = useStore();
     const [inputUsername, setInputUsername] = useState<string>('');
     const [userList, setUserList] = useState<UserType[]>([]); // [{...},{...}]
-    const [errorTxt, setErrorTxt] = useState<string>('');
-    const [openSnackbar, setOpenSnackbar] = useState<boolean>(false);
-
-    useEffect(()=>{
-        console.log('user search', state);
-    },[])
 
     const getUsernamesList = async (): Promise<void> => {
         if (inputUsername.length >= 2) {
@@ -78,10 +68,6 @@ function UserSearchPage() {
         setUserList([]);
     }
 
-    const handleClose = (): void => {
-        setOpenSnackbar(false);
-    };
-
     return (
         <div className="flex-1 flex-column">
             <Header/>
@@ -109,26 +95,26 @@ function UserSearchPage() {
                         ))}
                     </div>
                 </div> : null}
-            <Snackbar
-                anchorOrigin={{
-                    vertical: 'bottom',
-                    horizontal: 'left',
-                }}
-                open={openSnackbar}
-                autoHideDuration={6000}
-                onClose={handleClose}
-                message={errorTxt}
-                action={
-                    <>
-                        <Button color="secondary" size="small" onClick={handleClose}>
-                            Fermer
-                        </Button>
-                        <IconButton size="small" aria-label="close" color="inherit" onClick={handleClose}>
-                            <CloseIcon fontSize="small"/>
-                        </IconButton>
-                    </>
-                }
-            />
+            {/*<Snackbar*/}
+            {/*    anchorOrigin={{*/}
+            {/*        vertical: 'bottom',*/}
+            {/*        horizontal: 'left',*/}
+            {/*    }}*/}
+            {/*    open={openSnackbar}*/}
+            {/*    autoHideDuration={6000}*/}
+            {/*    onClose={handleClose}*/}
+            {/*    message={errorTxt}*/}
+            {/*    action={*/}
+            {/*        <>*/}
+            {/*            <Button color="secondary" size="small" onClick={handleClose}>*/}
+            {/*                Fermer*/}
+            {/*            </Button>*/}
+            {/*            <IconButton size="small" aria-label="close" color="inherit" onClick={handleClose}>*/}
+            {/*                <CloseIcon fontSize="small"/>*/}
+            {/*            </IconButton>*/}
+            {/*        </>*/}
+            {/*    }*/}
+            {/*/>*/}
         </div>
     );
 }
