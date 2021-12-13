@@ -82,7 +82,7 @@ function UserSearchPage() {
                         type="button">
                     Search
                 </button>
-                {!state.loading ? <CircularProgress/> : null}
+                {state.loading ? <CircularProgress/> : null}
             </div>
             {userList.length > 0 ?
                 <div className="flex justify-center">
@@ -95,26 +95,6 @@ function UserSearchPage() {
                         ))}
                     </div>
                 </div> : null}
-            {/*<Snackbar*/}
-            {/*    anchorOrigin={{*/}
-            {/*        vertical: 'bottom',*/}
-            {/*        horizontal: 'left',*/}
-            {/*    }}*/}
-            {/*    open={openSnackbar}*/}
-            {/*    autoHideDuration={6000}*/}
-            {/*    onClose={handleClose}*/}
-            {/*    message={errorTxt}*/}
-            {/*    action={*/}
-            {/*        <>*/}
-            {/*            <Button color="secondary" size="small" onClick={handleClose}>*/}
-            {/*                Fermer*/}
-            {/*            </Button>*/}
-            {/*            <IconButton size="small" aria-label="close" color="inherit" onClick={handleClose}>*/}
-            {/*                <CloseIcon fontSize="small"/>*/}
-            {/*            </IconButton>*/}
-            {/*        </>*/}
-            {/*    }*/}
-            {/*/>*/}
         </div>
     );
 }
